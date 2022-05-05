@@ -43,6 +43,10 @@ One of the Lambda functions requires the ability to put items into a DynamoDB ta
 
 5. In the AWS management console, navigate to [CloudWatch log groups](https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups). Select the log group for the Lambda function **theOtherOne**, then **Search all**. You will see logs which say **hello there** and **GeNeRaL kEnObI**. This indicates the **theOtherOne** resources were successfully deployed, and the Lambda function was invoked when the S3 object was uploaded.
 
+6. Within the [Pulumi console](https://app.pulumi.com/), select your project, stack name, the resources tab, and choose the **pkg:index:BucketComponent** named **s3EventsToDynamoDb**. You will see the properties (output resource values) and child resources created based on the ComponentResource declarations.
+
+![Screenshot of s3EventsToDynamoDb BucketComponent with Children tab expanded, showing the IAM, Lambda, and S3 resources](./pulumi-component-resource.png)
+
 ## Code breakdown 
 
 1. First, you have your ComponentResource class which encapsulates the child resources listed earlier. The class's constructor function allows you to declare multiple resources at the same time. The constructor accepts arguments for the IAM policy type (described below), the Lambda code, and the environment variables. The `parent: this` option indicates the resources belongs to the ComponentResource. 
