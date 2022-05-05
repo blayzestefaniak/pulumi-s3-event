@@ -1,6 +1,8 @@
-This is an example of how you can set up a Pulumi [ComponentResource](https://www.pulumi.com/docs/intro/concepts/resources/components/) as a reusable resource, so you do not need to repeat yourself when writing Pulumi code. This example's ComponentResource creates an event driven pipeline using Amazon S3 and AWS Lambda. 
+This is an example of how you can set up a Pulumi [ComponentResource](https://www.pulumi.com/docs/intro/concepts/resources/components/) as a reusable resource, so you do not need to repeat yourself when writing Pulumi code. This example's ComponentResource creates an event driven pipeline using Amazon S3 and AWS Lambda. The following diagram shows the resources created in the BucketComponent ComponentResource class, shows the instances of BucketComponent, and details the actions performed by each AWS Lambda function when run.
 
 > :warning: **Proceed with caution:** You should scope down the resources and actions within the IAM policy statements. 
+
+![Diagram of the components created](./pulumi-s3-events.png)
 
 ## Prerequisites 
 
@@ -312,7 +314,7 @@ pulumi stack ls
 pulumi stack select dev 
 ```
 
-4. For more information on organizing your Pulumi environment, refer to refer to [Organizing Projects and Stacks](https://www.pulumi.com/docs/guides/organizing-projects-stacks/).
+4. For more information on organizing your Pulumi environment, refer to [Organizing Projects and Stacks](https://www.pulumi.com/docs/guides/organizing-projects-stacks/).
 
 ## Clean up 
 
