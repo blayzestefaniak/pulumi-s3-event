@@ -1,4 +1,4 @@
-This is an example of how you can set up a Pulumi [ComponentResource](https://www.pulumi.com/docs/intro/concepts/resources/components/) as a reusable event driven pipeline using Amazon S3 and AWS Lambda, so you don't need to repeat yourself when writing Pulumi code. 
+This is an example of how you can set up a Pulumi [ComponentResource](https://www.pulumi.com/docs/intro/concepts/resources/components/) as a reusable resource, so you don't need to repeat yourself when writing Pulumi code. This example's ComponentResource creates an event driven pipeline using Amazon S3 and AWS Lambda. 
 
 > :warning: **Proceed with caution:** You should scope down the resources and actions within the IAM policy statements. 
 
