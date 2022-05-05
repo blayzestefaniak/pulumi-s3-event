@@ -1,8 +1,8 @@
-This is an example of how you can set up a Pulumi [ComponentResource](https://www.pulumi.com/docs/intro/concepts/resources/components/) as a reusable resource, so you don't need to repeat yourself when writing Pulumi code. This example's ComponentResource creates an event driven pipeline using Amazon S3 and AWS Lambda. 
+This is an example of how you can set up a Pulumi [ComponentResource](https://www.pulumi.com/docs/intro/concepts/resources/components/) as a reusable resource, so you do not need to repeat yourself when writing Pulumi code. This example's ComponentResource creates an event driven pipeline using Amazon S3 and AWS Lambda. 
 
 > :warning: **Proceed with caution:** You should scope down the resources and actions within the IAM policy statements. 
 
-## Prerequistes 
+## Prerequisites 
 
 1. [Configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) - ensure you have valid credentials 
 2. [Get Started with Pulumi](https://www.pulumi.com/docs/get-started/) - install Pulumi  
@@ -26,7 +26,7 @@ You will see two ComponentResources:
 - **theOtherOne** (a Lambda function with different permissions and Lambda function code, which prints text to its logs)
 
 Each ComponentResource child contains:
-- **Lambda function** (to run you custom code)
+- **Lambda function** (to run your custom code)
 - **Lambda function resource policy** (to allow S3 event notifications to invoke the function)
 - **Lambda IAM policy** (to access CloudWatch logs, along with resources you choose)
 - **Lambda IAM role** (which has a trust policy which allows Lambda to assume the role)
@@ -34,12 +34,12 @@ Each ComponentResource child contains:
 - **S3 bucket notification** (to invoke the Lambda function upon object creation)
 - **S3 bucket object** (to upload an object to demonstrate the initial invocation)
 
-One of the Lambda functions requires the ability to put items into a DynamoDB table. The DynamoDB table is not required by every Lambda function, so it is not created with the S3 event pipeline ComponentResource. 
+One of the Lambda functions requires the ability to put items into a DynamoDB table. A DynamoDB table is not required by every Lambda function, so a DynamoDB table is not created with the S3 event pipeline ComponentResource. 
 - **DynamoDBTable** (to store records of event notifications for one of the Lambda functions)
 
-4. In the AWS management console, navigate to [DynamoDB tables](https://console.aws.amazon.com/dynamodbv2/home#tables). Select the table which Pulumi created, choose **Explore table items**, and select **Run**. You will see the S3 object created on your behalf by the Pulumi stack. This indicates the **s3EventsToDynamoDb** resources were successfully deployed, and the Lambda function was invoked with the S3 object was uploaded. 
+4. In the AWS management console, navigate to [DynamoDB tables](https://console.aws.amazon.com/dynamodbv2/home#tables). Select the table which Pulumi created, choose **Explore table items**, and select **Run**. You will see the S3 object created on your behalf by the Pulumi stack. This indicates the **s3EventsToDynamoDb** resources were successfully deployed, and the Lambda function was invoked when the S3 object was uploaded. 
 
-5. In the AWS management console, navigate to [CloudWatch log groups](https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups). Select the log group for the Lambda function **theOtherOne**, then **Search all**. You will see logs which say **hello there** and **GeNeRaL kEnObI**. This indicates the **theOtherOne** resources were successfully deployed, and the Lambda function was invoked when the an S3 object was uploaded.
+5. In the AWS management console, navigate to [CloudWatch log groups](https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups). Select the log group for the Lambda function **theOtherOne**, then **Search all**. You will see logs which say **hello there** and **GeNeRaL kEnObI**. This indicates the **theOtherOne** resources were successfully deployed, and the Lambda function was invoked when the S3 object was uploaded.
 
 ## Code breakdown 
 
@@ -119,7 +119,7 @@ One of the Lambda functions requires the ability to put items into a DynamoDB ta
         });
 ```
 
-2. This script has a custom type of **PolicyType**. The custom type created in this script allows anyone reusing the class to to select a pre-determined IAM policy based on the Lambda function's required permissions. In this case, there are two IAM policies, one is for DynamoDB, the other is a SageMaker call. Note the second IAM policy is for demonstration purposes only; the policy is not actually used by the **theOtherOne** Lambda function code. 
+2. This script has a custom type of **PolicyType**. The custom type created in this script allows anyone reusing the class to select a pre-determined IAM policy based on the Lambda function's required permissions. In this case, there are two IAM policies, one is for DynamoDB, the other is a SageMaker call. Note the second IAM policy is for demonstration purposes only; the policy is not actually used by the **theOtherOne** Lambda function code. 
 
 ```typescript 
     /////////////////////////////////////////////////
@@ -155,7 +155,7 @@ One of the Lambda functions requires the ability to put items into a DynamoDB ta
     };
 ```
 
-3. The **getIamPolicy** method returns the IAM policy with CloudWatch logging by default, and injects the policy statement based on whether **dynamodb** or *sagemaker** policyType value is used in your variable declarations.
+3. The **getIamPolicy** method returns the IAM policy with CloudWatch logging by default, and injects the policy statement based on whether **dynamodb** or **sagemaker** policyType value is used in your variable declarations.
 
 ```typescript 
     //////////////////////////////////////////////////////////////////////
@@ -233,7 +233,7 @@ const dynamodb = new aws.dynamodb.Table("s3EventsToDynamoDb-DynamoDBTable", {
 });
 ```
 
-6. You then create a new instance of the BucketComponent ComponentResource. You pass your arguments for policyType, environmentVariables, and lambdaCode. In this case, the policyType is **dynamodb**, the environmentVariables creates a Lambda function environment variable for the DynamoDB table name, and the lambdaCode value is Python 3.9 code which gets 3 values from the S3 bucket notification and puts it as an item into the DynamoDB table. 
+6. You then create a new instance of the BucketComponent ComponentResource. You pass your arguments for policyType, environmentVariables, and lambdaCode. In this case, the policyType is **dynamodb**, the environmentVariables creates a Lambda function environment variable for the DynamoDB table name, and the lambdaCode value is Python 3.9 code which gets the **x-amz-request-id**, **eventTime**, and **key** values from the S3 bucket notification and puts it as an item into the DynamoDB table. 
 
 ```typescript 
 /////////////////////////////////////////////////////////////////
@@ -266,7 +266,7 @@ def lambda_handler(event, context):
 });
 ```
 
-7. To show ComponentResource reusability, the **theOtherOne** instance of the BucketComponent ComponentResource uses the **sagemaker** policyType, **foo bar** environmentVariables, and the lambdaCode prints two lines of text. 
+7. To show ComponentResource reusability, the **theOtherOne** instance of the BucketComponent ComponentResource uses the **sagemaker** policyType, **foo: bar** environmentVariables, and the lambdaCode prints two lines of text. 
 
 ```typescript
 /////////////////////////////////////////////////////////////////
@@ -281,7 +281,7 @@ const bucket2 = new BucketComponent("theOtherOne", {
 });
 ```
 
-8. Lastly, you can output resource values when you deploy them. A few are provided as samples, though not functionally critical in this case. 
+8. Lastly, you can output resource values when you deploy them. A few outputs are provided as samples, though not functionally critical in this case. 
 
 ```typescript 
 ///////////////////////////////////
@@ -316,10 +316,10 @@ pulumi stack select dev
 
 ## Clean up 
 
-To delete the resources you deployed following along, simply run the following command. Use caution when running this command if you've deployed other resources using Pulumi. 
+To delete the resources you deployed following along, simply run the following command. Use caution when running this command if you have deployed other resources using Pulumi. 
 
 ```bash 
 pulumi destroy 
 ```
 
-You've reached the end! Hope you've learned a thing! 
+You have reached the end! Hope you have learned a thing! 
