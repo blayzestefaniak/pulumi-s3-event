@@ -298,7 +298,7 @@ export const bucket2Name = bucket2.bucket.id;
 export const dynamoDbTableName = dynamodb.name;
 ```
 
-## Notes for first timers  
+## Notes for managing Pulumi stacks for beginners
 
 1. If you want to change stacks (dev, staging, production), you can run the following command. For more information on changing stacks, refer to [Pulumi Stacks](https://www.pulumi.com/docs/intro/concepts/stack/). 
 
